@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="bx.springChart.demoProject.mapper.WebSocketMapper">
+    
+    <resultMap id="WebSocketMap" type="bx.springChart.demoProject.model.WeiBoNewModel">
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="onboard_time" jdbcType="BIGINT" property="onboardTime"/>
+    </resultMap>
+    <select id="getAllTimeStamps" resultMap="WebSocketMap">
+    SELECT * FROM db_weibo_content
+    </select>
+
+
+</mapper>

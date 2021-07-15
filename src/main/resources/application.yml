@@ -1,0 +1,42 @@
+server:
+  port: 8081
+  #配置server校验SSL变成HTTPS
+  ssl:
+    key-store-password: RobertKey
+    key-store-type: PKCS12
+    key-store: classpath:RobertKey.p12
+  #配置http2开关
+  http2:
+    enabled: false
+
+spring:
+  #数据库连接配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/echartdemoone?characterEncoding=utf-8&useSSL=false&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+
+#mybatis的相关配置
+mybatis:
+  #mapper配置文件
+  mapper-locations: classpath:mapper/*.xml
+
+  #此配置的功能是UserMapper.xml中type可以简写
+  #type-aliases-package: bx.springChart.mybatisDemo.entity
+
+  #configuration:
+  #开启驼峰命名
+  #此配置的功能是自动对应，就是代替UserMapper.xml中的resultMap
+  # map-underscore-to-camel-case: true
+
+  #此配置的功能是禁用Mybatis自动映射
+  configuration:
+   auto-mapping-behavior: NONE
+
+#LOG输出SQL
+logging:
+  level:
+    bx:
+      springChart:
+        demoProject: debug

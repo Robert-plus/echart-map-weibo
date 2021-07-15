@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="bx.springChart.demoProject.mapper.WeiboMapper">
+    
+    <resultMap id="WeiBoMap" type="bx.springChart.demoProject.model.WeiBoNewModel">
+        <result column="id" jdbcType="INTEGER" property="id"/>
+        <result column="note" jdbcType="VARCHAR" property="note"/>
+        <result column="num" jdbcType="BIGINT" property="num"/>
+        <result column="onboard_time" jdbcType="BIGINT" property="onboardTime"/>
+        <!--20210624 新增word-->
+        <result column="word" jdbcType="VARCHAR" property="word"/>
+    </resultMap>
+    <select id="findAll" resultMap="WeiBoMap">
+    SELECT * FROM db_weibo_content
+    </select>
+
+
+</mapper>

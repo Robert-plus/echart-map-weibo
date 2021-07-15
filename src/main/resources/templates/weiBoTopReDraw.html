@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <link href="../weiBoTopReDraw.css" rel="stylesheet"/>
+    <script src="../echarts.min.js"></script>
+    <script src="../jquery-3.6.0.js"></script>
+    <script src="../weiBoTopReDraw.js"></script>
+</head>
+<body>
+<div class="clock">
+    <a>当前显示时间：</a>
+    <span id="time" class="time"></span>
+    <p></p>
+    <a>数据更新时间：</a>
+    <span id="updateTime" class="time"></span>
+    <p></p>
+    <a>数据获取时间：</a>
+    <span id="dataBaseUpdateTime" class="time"></span>
+</div>
+<div id="container" style="height: 2400px">
+</div>
+<script>
+    let dom = document.getElementById("container");
+    let myChart = echarts.init(dom);
+    let option;
+    option = {
+        grid: {
+            left: "30%",
+            right: "20%"
+        },
+        xAxis: {
+            max: 'dataMax'
+
+        },
+        yAxis: {
+            type: 'category',
+            data: note,
+            inverse: true,
+            animationDuration: 300,
+            animationDurationUpdate: 300,
+            max: 49 // only the largest 3 bars will be displayed
+        },
+        //tooltip: {
+        //trigger: 'axis',
+        // axisPointer: {
+        //     type: 'shadow'
+        // }
+        //},
+        toolbox: {
+            feature: {
+                saveAsImage: {
+                    show: false,//控制保存按钮显示隐藏
+                }
+            }
+        },
+        series: [{
+            realtimeSort: true,
+            name: 'X',
+            type: 'bar',
+            data: num,
+            itemStyle: {
+                color: function (param) {
+                    return thisTimeColor[param.dataIndex];
+
+                }
+            },
+            label: {
+                show: true,
+                position: 'right',
+                valueAnimation: true
+            }
+        }],
+        legend: {
+            show: false
+        },
+        animationDuration: 0,
+        animationDurationUpdate: 300,
+        animationEasing: 'linear',
+        animationEasingUpdate: 'linear'
+    };
+</script>
+<script>
+    //设定每一秒更新时间
+    setInterval("show()", 1000);
+</script>
+<script type="text/javascript">
+    setTimeout(function () {
+        aJax();
+    }, 0);
+    //设定每30秒执行一次ajax
+    // setInterval(function () {
+    //     aJax();
+    //     run();
+    // }, 30000);
+    if (option && typeof option === 'object') {
+        myChart.setOption(option);
+    }
+</script>
+<script>
+    let websocket = null;
+    //判断当前浏览器是否支持WebSocket
+    if ('WebSocket' in window) {
+        //建立连接，这里的/websocket ，是ManagerServlet中开头注解中的那个值
+        let curHost=window.location.host
+        try{
+        websocket = new WebSocket("wss://"+curHost+"/webSocket/10");
+        }catch (e) {
+            console.log(e)
+            console.log(e.message)
+        }
+    }
+    else {
+        alert('当前浏览器不支持websocket')
+    }
+    //连接发生错误的回调方法
+    websocket.onerror = function () {
+        setMessageInnerHTML("WebSocket连接发生错误");
+    };
+    //连接成功建立的回调方法
+    websocket.onopen = function () {
+        setMessageInnerHTML("WebSocket连接成功");
+    }
+    //接收到消息的回调方法
+    websocket.onmessage = function (event) {
+        setMessageInnerHTML(event.data);
+        if(event.data=="1"){
+            // location.reload();
+            aJax();
+            run();
+            console.log("接到了响应，调用了AJAX");
+        }
+    }
+    //连接关闭的回调方法
+    websocket.onclose = function () {
+        setMessageInnerHTML("WebSocket连接关闭");
+    }
+    //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
+    window.onbeforeunload = function () {
+        closeWebSocket();
+    }
+    //将消息显示在网页上
+    function setMessageInnerHTML(innerHTML) {
+        // document.getElementById('message').innerHTML += innerHTML + '<br/>';
+        console.log(innerHTML);
+    }
+    //关闭WebSocket连接
+    function closeWebSocket() {
+        websocket.close();
+    }
+</script>
+</body>
+</html>
